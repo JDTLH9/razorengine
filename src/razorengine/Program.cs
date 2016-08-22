@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
+using razorengine.Models;
 using RazorEngine;
 using RazorEngine.Templating;
 
@@ -16,8 +17,11 @@ namespace razorengine
             {
                 // RazorEngine cannot clean up from the default appdomain...
                 Console.WriteLine("Switching to secound AppDomain, for RazorEngine...");
-                AppDomainSetup adSetup = new AppDomainSetup();
-                adSetup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+                // ReSharper disable once ObjectCreationAsStatement
+                new AppDomainSetup
+                {
+                    ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+                };
                 var current = AppDomain.CurrentDomain;
                 // You only need to add strongnames when your appdomain is not a full trust environment.
                 var strongNames = new StrongName[0];
@@ -33,8 +37,12 @@ namespace razorengine
             }
 
             var template = Template.Get("MyView.cshtml");
-
-            Console.Write(Engine.Razor.RunCompile(template, "key", typeof(Name), new Name()));
+            var persons = new []
+            {
+                new Person {Age = 21, Forename = "Ken", Surname = "Tobin"},
+                new Person {Age = 19, Forename = "Sharon", Surname = "Testshire"}
+            };
+            Console.Write(Engine.Razor.RunCompile(template, "key", typeof(Name), new Name {Persons = persons}));
             Console.ReadLine();
             return 0;
         }

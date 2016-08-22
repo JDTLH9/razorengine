@@ -1,3 +1,12 @@
-﻿<div>
+﻿@model razorengine.Models.Name
+<div>
     <strong>@Model.MyName</strong>
+    @foreach (var person in Model.Persons)
+    {
+        <div>
+            <div>@person.Forename</div>
+            <div>@person.Surname</div>
+            <div>@person.Age</div>
+        </div>
+    }
 </div>
